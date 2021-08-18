@@ -7,8 +7,11 @@
     </template>
 
     <template #conversations>
-      <div class="h-full bg-white">
-        <div class="max-w-sm flex flex-col w-full h-full pl-8 pr-8 py-6 -mr-4">
+      <div
+        class="h-full bg-white w-screen lg:w-1/3 sm:block"
+        v-bind:class="{ hidden: navHidden }"
+      >
+        <div class="flex flex-col w-full h-full pl-8 pr-8 py-6 -mr-4">
           <div class="flex flex-row items-center">
             <div class="flex flex-row items-center">
               <div class="text-xl font-semibold">Conversations</div>
@@ -20,11 +23,22 @@
               >
                 Compose
               </secondary-button>
+              <button
+                class="ml-5 -mr-4 sm:block lg:hidden"
+                style="
+                  background: #f2f3f4;
+                  border-radius: 5px;
+                  padding: 5px 10px;
+                "
+                @click="toggle()"
+              >
+                X
+              </button>
             </div>
           </div>
           <div class="mt-6">
             <div class="bg-white">
-              <nav class="flex flex-col sm:flex-row space-x-8">
+              <nav class="flex space-x-8">
                 <button
                   @click.prevent="filter = 'all'"
                   :class="{
@@ -77,6 +91,7 @@
                 }"
                 @click.prevent="switchConversation(conversation)"
                 v-for="conversation in conversations_source.data"
+                :key="conversation.id"
                 class="
                   -ml-4
                   -mr-4
@@ -145,7 +160,8 @@
     </template>
 
     <div
-      class="flex flex-col h-full sm:w-full"
+      class="h-full w-screen"
+      v-bind:class="{ hidden: !navHidden }"
       style="background-color: #f9f9f9"
     >
       <div class="h-full">
@@ -173,8 +189,8 @@
                   Compose Message
                 </secondary-button>
               </div>
-              <div class="mt-4">
-                <secondary-button @click.prevent="compose.showModal = true">
+              <div class="mt-4 sm:hidden">
+                <secondary-button @click.prevent="toggle()">
                   View Contact
                 </secondary-button>
               </div>
@@ -306,6 +322,7 @@ export default {
           message: "",
         }),
       },
+      navHidden: true,
     };
   },
 
@@ -334,6 +351,10 @@ export default {
   },
 
   methods: {
+    toggle() {
+      this.navHidden = !this.navHidden;
+      console.log(this.navHidden);
+    },
     switchConversation(conversation) {
       // this.active_conversation_id = conversation.id;
       this.$inertia.get(

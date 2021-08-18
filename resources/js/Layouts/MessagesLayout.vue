@@ -764,16 +764,9 @@
       </dialog-modal>
 
       <!-- Page Content -->
-      <main class="h-full flex overflow-y-scroll">
-        <div
-          class="hidden sm:block flex-shrink-0 w-1/2 sm:w-1/2 lg:w-1/3 max-w-sm"
-        >
-          <slot name="conversations"></slot>
-        </div>
-
-        <div class="flex-grow">
-          <slot></slot>
-        </div>
+      <main class="h-full flex overflow-y-scroll w-screen">
+        <slot name="conversations"></slot>
+        <slot></slot>
       </main>
     </div>
   </div>
