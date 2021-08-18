@@ -1,0 +1,17 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import '@vueform/multiselect/themes/default.css';
+
+.multiselect-options {
+    overflow: auto !important;
+}
+
+#suggestion-tooltip {
+    display: none;
+}
+
+#suggestion-tooltip.show {
+    display: block;
+}
