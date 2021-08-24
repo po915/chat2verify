@@ -7,12 +7,26 @@
     </template>
 
     <template #conversations>
-      <div class="h-full bg-white flex">
-        <div class="max-w-sm flex flex-col w-full h-full pl-8 pr-8 py-6 -mr-4">
+      <div
+        class="h-full bg-white w-screen lg:w-1/3 sm:block"
+        v-bind:class="{ hidden: navHidden }"
+      >
+        <div
+          class="
+            max-w-sm
+            flex flex-col
+            w-full
+            h-full
+            pl-8
+            pr-8
+            py-6
+            -mr-4
+            overflow-auto
+          "
+        >
           <div class="flex flex-row items-center">
             <div class="flex flex-row items-center">
               <div class="text-xl font-semibold">Conversations</div>
-              <!--                            <div class="flex items-center justify-center ml-2 text-xs h-5 w-5 text-white bg-red-500 rounded-full font-medium">5</div>-->
             </div>
             <div class="ml-auto">
               <secondary-button
@@ -21,11 +35,22 @@
               >
                 Compose
               </secondary-button>
+              <button
+                class="ml-5 -mr-4 sm:block lg:hidden"
+                style="
+                  background: #f2f3f4;
+                  border-radius: 5px;
+                  padding: 5px 10px;
+                "
+                @click="toggle()"
+              >
+                X
+              </button>
             </div>
           </div>
           <div class="mt-6">
             <div class="bg-white">
-              <nav class="flex flex-col sm:flex-row space-x-8">
+              <nav class="flex space-x-8">
                 <button
                   @click.prevent="filter = 'all'"
                   :class="{
@@ -79,6 +104,7 @@
                 }"
                 @click.prevent="switchConversation(conversation)"
                 v-for="conversation in conversations_source.data"
+                :key="conversation.id"
                 class="
                   -ml-4
                   -mr-4
@@ -91,6 +117,7 @@
                   px-6
                   border-l-2 border-transparent
                 "
+                @click="toggle()"
               >
                 <div
                   class="absolute text-xs text-gray-500 right-0 top-2 mr-4 mt-3"
@@ -142,23 +169,48 @@
       </div>
     </template>
 
-    <div class="flex flex-col h-full w-full" style="background-color: #f9f9f9">
+    <div
+      class="flex flex-col h-full w-screen"
+      style="background-color: #f9f9f9"
+      v-bind:class="{ hidden: !navHidden }"
+    >
       <template v-if="conversations_source.data.length > 0">
         <div class="flex flex-row items-center py-4 px-6 bg-white">
-          <div
+          <a
+            href="#"
             class="
               flex
               items-center
               justify-center
+              bg-gray-100
+              hover:bg-gray-200
+              text-gray-400
               h-10
               w-10
-              rounded-full
-              bg-pink-500
-              text-pink-100
+              md:hidden
+              rounded
             "
+            @click="toggle()"
           >
-            T
-          </div>
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-menu"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </span>
+          </a>
           <div class="flex flex-col ml-3">
             <h4
               @click.prevent="show_update_contact_modal = true"
@@ -328,6 +380,7 @@
                 v-for="message in active_conversation_messages.data
                   .slice()
                   .reverse()"
+                :key="message.id"
                 class="col-start-1 col-end-8 p-3 rounded-lg"
               >
                 <div
@@ -353,7 +406,10 @@
                     "
                   />
                   <div>
-                    <template v-for="attachment in message.attachments">
+                    <template
+                      v-for="attachment in message.attachments"
+                      :key="attachment.id"
+                    >
                       <img
                         width="384"
                         height="384"
@@ -400,6 +456,7 @@
                         shadow
                         rounded-xl
                       "
+                      style="min-width: 200px"
                     >
                       {{ message.message }}
                     </div>
@@ -806,6 +863,7 @@ export default {
           message: "",
         }),
       },
+      navHidden: true,
     };
   },
 
@@ -822,6 +880,10 @@ export default {
   },
 
   methods: {
+    toggle() {
+      this.navHidden = !this.navHidden;
+      console.log(this.navHidden);
+    },
     switchConversation(conversation) {
       // this.active_conversation_id = conversation.id;
       this.$inertia.get(
